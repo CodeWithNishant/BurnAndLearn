@@ -14,16 +14,16 @@ big_font = pygame.font.SysFont("Arial", 48, bold=True)
 
 # --- SOUND EFFECTS ---
 try:
-    engine_sound = pygame.mixer.Sound("rocket_engine_sound.mp3")
+    engine_sound = pygame.mixer.Sound("sound_files/rocket_engine_sound.mp3")
     engine_sound.set_volume(1)
 
-    rcs_sound = pygame.mixer.Sound("rocket_rcs_sound.mp3")
+    rcs_sound = pygame.mixer.Sound("sound_files/rocket_rcs_sound.mp3")
     rcs_sound.set_volume(0.5)
     
-    explosion_sound = pygame.mixer.Sound("rocket_crash_sound.mp3")
+    explosion_sound = pygame.mixer.Sound("sound_files/rocket_crash_sound.mp3")
     explosion_sound.set_volume(0.5)
     
-    success_sound = pygame.mixer.Sound("rocket_success_landing_sound.mp3")
+    success_sound = pygame.mixer.Sound("sound_files/rocket_success_landing_sound.mp3")
     success_sound.set_volume(0.5)
     
     SOUNDS_ENABLED = True
