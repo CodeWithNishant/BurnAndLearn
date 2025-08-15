@@ -114,11 +114,11 @@ class RocketRenderer:
         h = RocketConfig.HEIGHT * SCALE / 2
         # Position thrusters around the mid-body
         offset_y = 0.0 # center of rocket body in local frame
-        x_offset = -w * 0.95 if side == 'left' else w * 0.95
+        x_offset = w * 0.95 if side == 'right' else -w * 0.95
         # Small nozzle height and variable flame length with flicker
         nozzle_h = max (2.0, h * 0.12)
         flicker = 0.85 + random.random() * 0.4
-        base_len = w * 0.75
+        base_len = w * 1
         flame_len = base_len * flicker
         # Define local-frame triangle pointing outward
         if side == 'left':
