@@ -54,7 +54,7 @@ class RocketConfig:
     # Starting conditions
     START_X = 0
     START_Y = 500
-    START_FUEL = FUEL_CAPACITY
+    START_FUEL = 7500
 
 # Audio Configuration
 class AudioConfig:
@@ -73,7 +73,7 @@ class AudioConfig:
 
 # Camera Configuration
 class CameraConfig:
-    FOLLOW_SMOOTHNESS = 0.05  # Lower = smoother, higher = more responsive
+    # FOLLOW_SMOOTHNESS = 0.5  # Lower = smoother, higher = more responsive
     Y_OFFSET = -100          # Camera looks ahead in Y direction
 
 # UI Configuration

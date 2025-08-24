@@ -181,10 +181,10 @@ class RocketPhysics:
         # --- RCS Physics ---
         rcs_active = False
         
-        if controls.rotate_left and self.fuel_mass > 0:
+        if controls.rotate_right and self.fuel_mass > 0:
             torque_arm = RocketConfig.HEIGHT / 2
             torque = RocketConfig.RCS_THRUST * torque_arm
-            angular_accel = -torque / RocketConfig.MOMENT_OF_INERTIA
+            angular_accel = torque / RocketConfig.MOMENT_OF_INERTIA
             
             self.angular_velocity += angular_accel * dt
             fuel_consumed = RocketConfig.FUEL_CONSUMPTION_RATE * 0.1 * dt
@@ -192,10 +192,10 @@ class RocketPhysics:
             self.left_thruster_on = True
             rcs_active = True
         
-        if controls.rotate_right and self.fuel_mass > 0:
+        if controls.rotate_left and self.fuel_mass > 0:
             torque_arm = RocketConfig.HEIGHT / 2
             torque = RocketConfig.RCS_THRUST * torque_arm
-            angular_accel = torque / RocketConfig.MOMENT_OF_INERTIA
+            angular_accel = -torque / RocketConfig.MOMENT_OF_INERTIA
             
             self.angular_velocity += angular_accel * dt
             fuel_consumed = RocketConfig.FUEL_CONSUMPTION_RATE * 0.1 * dt

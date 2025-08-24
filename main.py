@@ -19,7 +19,7 @@ class RocketSimulation:
     def __init__(self):
         # Initialize pygame
         pygame.init()
-        pygame.display.set_caption("Burn & Learn - Realistic Physics")
+        pygame.display.set_caption("Burn & Learn")
         
         # Create main systems
         self.screen = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
@@ -93,14 +93,18 @@ class RocketSimulation:
     def _update_systems(self, dt: float):
         """Update all game systems."""
         # Update camera to follow rocket
-        self.camera.follow(self.rocket.x, self.rocket.y)
-    
+        rocket_speed = self.rocket.get_speed()
+        if rocket_speed < 100:
+            self.camera.follow(self.rocket.x, self.rocket.y, 0.05)
+        else:
+            self.camera.follow(self.rocket.x, self.rocket.y, rocket_speed/1000)
+
     def _render_frame(self):
         """Render the current frame."""
         rocket_state = self.rocket.get_state()
         self.renderer.render_frame(rocket_state, self.camera, self.timer)
         
-        # Optionally show controls help
+        # showing control help
         if self.show_help:
             self.renderer.ui_renderer.render_controls_help(self.screen)
     

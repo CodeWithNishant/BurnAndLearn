@@ -12,17 +12,17 @@ class Camera:
     def __init__(self, x: float = 0, y: float = 0):
         self.x = x
         self.y = y
-    
-    def follow(self, target_x: float, target_y: float):
+
+    def follow(self, target_x: float, target_y: float, follow_smoothness: float):
         """Smoothly follow a target position."""
         # Calculate target camera position with offset
         target_camera_x = target_x
         target_camera_y = target_y + CameraConfig.Y_OFFSET
         
         # Smooth interpolation to target
-        self.x += (target_camera_x - self.x) * CameraConfig.FOLLOW_SMOOTHNESS
-        self.y += (target_camera_y - self.y) * CameraConfig.FOLLOW_SMOOTHNESS
-    
+        self.x += (target_camera_x - self.x) * follow_smoothness
+        self.y += (target_camera_y - self.y) * follow_smoothness
+
     def world_to_screen(self, world_x: float, world_y: float) -> Tuple[float, float]:
         """Convert world coordinates to screen coordinates."""
         screen_x = (world_x - self.x) * SCALE + DISPLAY_WIDTH / 2
