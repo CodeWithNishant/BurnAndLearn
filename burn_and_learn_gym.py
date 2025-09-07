@@ -27,8 +27,8 @@ class RocketEnv(gym.Env):
         self.camera = None
 
         # --- Spaces ---
-        # Actions: 0=no-op, 1=main engine, 2=rcs_left, 3=rcs_right
-        self.action_space = spaces.Discrete(4)
+        # Actions: 0=no-op, 1=main engine up 2=main engine down, 3=rcs_left, 4=rcs_right, 5=cut engines
+        self.action_space = spaces.Discrete(6)
 
         # Observations: x, y, vx, vy, angle, angular_velocity, fuel
         low = np.array(
@@ -47,24 +47,41 @@ class RocketEnv(gym.Env):
 
     # --- Gym API ---
 
-    def reset(self):
+    def reset(self, *, seed=None, options=None):
         """Reset the environment to initial state."""
+        if seed is not None:
+            np.random.seed(seed)
         self.rocket.reset()
         self.timer = 0.0
         self.done = False
-        return self._get_obs()
+
+        obs = self._get_obs()
+        info = {}
+        return obs, info
 
     def step(self, action: int):
         """Apply one action and update the environment."""
+
+        '''
+            increase_throttle: bool = False
+            decrease_throttle: bool = False
+            rotate_left: bool = False
+            rotate_right: bool = False
+            engine_shutdown: bool = False
+        '''
 
         # Use Controls dataclass instead of dict
         controls = Controls()
         if action == 1:
             controls.increase_throttle = True
         elif action == 2:
-            controls.rotate_left = True
+            controls.decrease_throttle = True
         elif action == 3:
+            controls.rotate_left = True
+        elif action == 4:
             controls.rotate_right = True
+        elif action == 5:
+            controls.engine_shutdown = True
 
         # Update rocket physics
         self.rocket.update(controls, self.dt)
@@ -77,11 +94,24 @@ class RocketEnv(gym.Env):
         reward = self._calculate_reward()
 
         # Episode termination
-        self.done = self.rocket.landed or self.rocket.crashed or self.rocket.fuel_mass <= 0
+        terminated = self.rocket.landed or self.rocket.crashed or self.rocket.fuel_mass <= 0
 
-        return obs, reward, self.done, {}
+        truncated = False 
+        if self.timer > 2000:  # e.g., 2000 timesteps
+            truncated = True
 
-    def render(self, mode="human"):
+        info = {
+            "time": self.timer,
+            "fuel": self.rocket.fuel_mass,
+            "altitude": self.rocket.y,
+            "velocity": self.rocket.get_speed(),
+            "landed": self.rocket.landed,
+            "crashed": self.rocket.crashed,
+        }
+
+        return obs, reward, terminated, truncated, info
+
+    def render(self):
         """Render the environment with pygame."""
         if self.screen is None:
             pygame.init()

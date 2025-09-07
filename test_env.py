@@ -8,7 +8,7 @@ done = False
 while not done:
     action = env.action_space.sample()  # random action
     obs, reward, done, info = env.step(action)
-    env.render(mode="human")
+    env.render()
 
     # Handle window events so pygame actually shows the frame
     import pygame
