@@ -16,6 +16,15 @@ Inspired by SpaceX’s Falcon 9 landings, this environment allows you to train R
 	•	 Reinforcement Learning environment (Gym-compatible)
 	•	 Works with Stable-Baselines3 (PPO, DQN, SAC, etc.)
 
+## Screenshot
+### Image 1 : Rocket free falling towards the ground visible as green line
+<img width="791" height="749" alt="Screenshot 2025-08-27 at 8 45 30 PM" src="https://github.com/user-attachments/assets/1dd3e8db-05e2-479d-9601-fd219ccf5a23" />
+
+### Image 2 : Rocket with engine on moving at an angle
+<img width="782" height="792" alt="Screenshot 2025-08-27 at 8 45 58 PM" src="https://github.com/user-attachments/assets/b8dd4bad-4fc8-4e89-a60a-923bd9b212b8" />
+
+
+
  ## Project Structure
  BurnAndLearn/  
 │  
