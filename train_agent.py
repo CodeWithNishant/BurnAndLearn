@@ -3,6 +3,7 @@ import os
 import argparse
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv
+from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.callbacks import CheckpointCallback, EvalCallback, StopTrainingOnRewardThreshold
 import gymnasium as gym
@@ -33,10 +34,11 @@ def main(args):
 
     # --- envs ---
     n_envs = args.n_envs
-    vec_env = DummyVecEnv([make_env(seed=1000 + i) for i in range(n_envs)])
+    # vec_env = DummyVecEnv([make_env(seed=1000 + i) for i in range(n_envs)])
+    vec_env = SubprocVecEnv([make_env(seed=1000 + i) for i in range(n_envs)])
 
     # --- evaluation env (single env) ---
-    eval_env = DummyVecEnv([make_env(seed=9999)])
+    eval_env = SubprocVecEnv([make_env(seed=9999)])
 
     # --- callbacks ---
     # Save checkpoints periodically
@@ -45,7 +47,7 @@ def main(args):
                                        name_prefix="burnlearn")
 
     # Stop training when achieved a reward threshold on eval
-    stop_cb = StopTrainingOnRewardThreshold(reward_threshold=args.stop_reward, verbose=1)
+    # stop_cb = StopTrainingOnRewardThreshold(reward_threshold=args.stop_reward, verbose=1)
 
     # Eval + keep best model
     eval_cb = EvalCallback(eval_env,
@@ -54,7 +56,8 @@ def main(args):
                            eval_freq=args.eval_freq,
                            deterministic=True,
                            render=False,
-                           callback_after_eval=stop_cb)
+                        #    callback_after_eval=stop_cb
+                           )
 
     # --- model ---
     policy_kwargs = dict(net_arch=[dict(pi=[256, 256], vf=[256, 256])])
@@ -80,7 +83,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--timesteps", type=int, default=200_000, help="Total training timesteps")
-    parser.add_argument("--n-envs", type=int, default=4, dest="n_envs")
+    parser.add_argument("--n-envs", type=int, default=8, dest="n_envs")
     parser.add_argument("--run-id", type=str, default=None)
     parser.add_argument("--checkpoint-freq", type=int, default=100_000)
     parser.add_argument("--eval-freq", type=int, default=5000)
