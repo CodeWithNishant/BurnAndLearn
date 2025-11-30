@@ -13,7 +13,7 @@ def run(model_path, episodes=5, render=True, sleep=0.02):
         done = False
         while not done:
             action, _ = model.predict(obs, deterministic=True)
-            obs, rew, done, truncated, info = env.step(action)
+            obs, rew, done, truncated, info = env.step(int(action))
             done = done or truncated
             if render:
                 env.render()
