@@ -1,6 +1,7 @@
 import gymnasium as gym
 import numpy as np
 import pygame
+import math
 from gymnasium import spaces
 
 from physics.rocket import RocketPhysics, Controls
@@ -157,19 +158,41 @@ class RocketEnv(gym.Env):
         )
 
     def _calculate_reward(self):
-        """Reward shaping logic."""
-        reward = -1  # small penalty every step
+        """
+        Reward system focused purely on landing.
 
+        Goals:
+        1. Encourage the rocket to move closer to the ground.
+        2. Penalize moving away from the ground.
+        3. Penalize sideways motion.
+        4. Reward slower vertical speed near landing.
+        5. Give a large reward for successful landing and moderate penalty for crash.
+        """
+
+        reward = 0.0
+
+        # --- 1. Encourage getting closer to the ground ---
+        # Ground is y = 0. Smaller altitude should give higher reward
+        reward += (1000.0 - self.rocket.y) * 0.01
+
+        # --- 2. Penalize moving upward (positive vy means going up) ---
+        if self.rocket.vy > 0:
+            reward -= abs(self.rocket.vy) * 0.1
+
+        # --- 3. Penalize sideways velocity ---
+        reward -= abs(self.rocket.vx) * 0.05
+
+        # --- 4. Reward gentle vertical speed near ground ---
+        if self.rocket.y < 100:  # only care near landing
+            reward += max(0, 10 - abs(self.rocket.vy))
+
+        # --- 5. Terminal rewards ---
         if self.rocket.landed:
-            if (
-                abs(self.rocket.vx) < 2
-                and abs(self.rocket.vy) < 2
-                and abs(self.rocket.angle) < 0.1
-            ):
-                reward += 1000  # perfect landing
-            else:
-                reward += 500  # okay landing
-        elif self.rocket.crashed:
-            reward -= 1000  # big penalty for crash
+            # Reward based on how soft the landing was
+            reward += max(0, 10 - abs(self.rocket.vy)) * 50
+            reward += 500
 
-        return reward
+        if self.rocket.crashed:
+            reward -= 300
+
+        return float(reward)
